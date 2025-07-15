@@ -1,5 +1,7 @@
 const { where } = require("sequelize");
 const { Logger } = require("../config");
+const AppError = require("../utils/errors/appError");
+const { StatusCodes } = require("http-status-codes");
 
 class CrudRepository {
     constructor(model){
@@ -22,11 +24,16 @@ class CrudRepository {
 
     async get(id){
         const response = await this.model.findByPk(id);
+        // If no entry with the given id
+        // Why implemented here instead of service layer ? -> This is a common thing that can occur across multiple models so instead of handling it in each service we can handle it here.
+        if (!response){
+            throw new AppError(['Not able to find the resource'], StatusCodes.NOT_FOUND);
+        }
         return response;
     }
 
     async getAll(){
-        const response = await this.model.findAll(id);
+        const response = await this.model.findAll();
         return response;
     }
 
