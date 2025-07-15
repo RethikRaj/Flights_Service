@@ -1,10 +1,12 @@
 const express = require('express');
 const { PingController } = require('../../controllers');
-const airplaneRouter = require('./airplaneRouter')
+const airplaneRouter = require('./airplaneRouter');
+const cityRouter = require('./cityRouter');
 
 const router = express.Router();
 
 router.use('/airplanes', airplaneRouter);
+router.use('/cities', cityRouter);
 
 
 
