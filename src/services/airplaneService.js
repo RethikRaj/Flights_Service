@@ -60,9 +60,25 @@ async function deleteAirplane(id){
     }
 }
 
+async function updateAirplane(id, data){
+    try {
+        const airplane = await airplaneRepository.update(id,data);
+        return airplane;
+    } catch (error) {
+        if(error.statusCode == StatusCodes.NOT_FOUND){
+            throw new AppError(['The airplane you requested to update is not present'], error.statusCode);
+        }
+        else if(error.name == 'SequelizeDatabaseError'){
+            throw new AppError([error.parent.sqlMessage], StatusCodes.BAD_REQUEST);
+        }
+        throw new AppError(['Error while updating the airplane'], StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
 module.exports = {
     createAirplane,
     getAllAirplanes,
     getAirplane,
-    deleteAirplane
+    deleteAirplane,
+    updateAirplane
 }
