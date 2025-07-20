@@ -13,7 +13,7 @@ async function createAirplane(req,res){
             capacity
         });
 
-        SuccessResponse.message = 'Successfully created an airplane';
+        // SuccessResponse.message = 'Successfully created an airplane';
         SuccessResponse.data = airplane;
 
         return res.status(StatusCodes.CREATED).json(SuccessResponse)
