@@ -9,4 +9,7 @@ const router = express.Router();
 // POST : /api/v1/flights/
 router.post('/', FlightMiddlewares.validateCreateRequest , FlightController.createFlight);
 
+// GET : /api/v1/flights/?trips=BLR-MAA
+router.get('/',FlightController.getAllFlights);
+
 module.exports = router;
