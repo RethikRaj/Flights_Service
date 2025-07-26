@@ -1,6 +1,6 @@
+const {Sequelize} = require('sequelize');
 const CrudRepository = require("./crudRepository");
-
-const { Flight } = require('../models')
+const { Flight, Airplane, Airport, City} = require('../models')
 
 class FlightRepository extends CrudRepository{
     constructor(){
@@ -11,7 +11,40 @@ class FlightRepository extends CrudRepository{
         console.log(customFilterObject);
         const flights = await Flight.findAll({
             where : customFilterObject,
-            order : sortFilterObject
+            order : sortFilterObject,
+            include : [
+                {
+                    model : Airplane,
+                    as : 'airplaneDetails',
+                    required : true
+                },
+                {               
+                    model : Airport,
+                    as : 'departureAirport',
+                    required : true,
+                    on : Sequelize.literal('`departureAirport`.`code` = `Flight`.`departureAirportCode`'),
+                    include : [
+                        {
+                            model : City,
+                            as : 'cityDetails',
+                            required : true
+                        }
+                    ]
+                },
+                {
+                    model : Airport,
+                    as : 'arrivalAirport',
+                    required : true,
+                    on : Sequelize.literal('`arrivalAirport`.`code` = `Flight`.`arrivalAirportCode`'),
+                    include : [
+                        {
+                            model : City,
+                            as : 'cityDetails',
+                            required : true
+                        }
+                    ]
+                }
+            ],
         });
         return flights;
     }
