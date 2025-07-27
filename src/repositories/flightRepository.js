@@ -1,7 +1,8 @@
 const {Sequelize} = require('sequelize');
 const CrudRepository = require("./crudRepository");
-const { Flight, Airplane, Airport, City} = require('../models');
+const { Flight, Airplane, Airport, City, sequelize} = require('../models');
 const { stringToBoolean } = require('../utils/helpers/strToBool');
+const { addRowLock } = require('./queries');
 
 class FlightRepository extends CrudRepository{
     constructor(){
@@ -51,6 +52,9 @@ class FlightRepository extends CrudRepository{
     }
 
     async updateSeats(flightId, numberOfSeats, decrease = true){
+        // Adding row lock so that at a time two or more cant update seats
+        await sequelize.query(addRowLock(flightId));
+        
         const flight = await Flight.findByPk(flightId);
         decrease = stringToBoolean(decrease); // to handle datas in json format and url-encoded format
         if (decrease){
