@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const AppError = require("../utils/errors/appError");
+const { ErrorResponse } = require("../utils/common");
 
 function validateCreateRequest(req,res,next){
     const { flightNumber, departureAirportCode, arrivalAirportCode,  departureTime, arrivalTime, airplaneId, price, boardingGate, remainingSeats} = req.body;
@@ -22,6 +23,15 @@ function validateCreateRequest(req,res,next){
     }
 }
 
+function validateUpdateRequest(req,res,next){
+    if(!req.body || !req.body.numberOfSeats){
+        ErrorResponse.error = new AppError(['Number of seats is not found in incoming request'], StatusCodes.BAD_REQUEST);
+        return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
+    }
+    next();
+}
+
 module.exports = {
-    validateCreateRequest
+    validateCreateRequest,
+    validateUpdateRequest
 }

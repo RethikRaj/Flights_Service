@@ -94,14 +94,28 @@ async function getFlight(id){
         return flight;
     } catch (error) {
         if(error.statusCode == StatusCodes.NOT_FOUND){
-            throw new AppError(['The airport you requested is not present'], error.statusCode);
+            throw new AppError(['The flight you requested is not present'], error.statusCode);
         }
-        throw new AppError(["Error while fetching data of the airport"], StatusCodes.INTERNAL_SERVER_ERROR);
+        throw new AppError(["Error while fetching data of the flight"], StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
+async function updateSeats(data){
+    try {
+        const flight = await flightRepository.updateSeats(data.flightId, data.numberOfSeats, data.decrease);
+        return flight;
+    } catch (error) {
+        console.log(error);
+        if(error.statusCode == StatusCodes.NOT_FOUND){
+            throw new AppError(['The flight you requested is not present'], error.statusCode);
+        }
+        throw new AppError(['Error while fetching data of the flight'], StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
 module.exports = {
     createFlight,
     getAllFlights,
-    getFlight
+    getFlight,
+    updateSeats
 }

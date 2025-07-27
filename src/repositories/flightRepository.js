@@ -1,6 +1,7 @@
 const {Sequelize} = require('sequelize');
 const CrudRepository = require("./crudRepository");
-const { Flight, Airplane, Airport, City} = require('../models')
+const { Flight, Airplane, Airport, City} = require('../models');
+const { stringToBoolean } = require('../utils/helpers/strToBool');
 
 class FlightRepository extends CrudRepository{
     constructor(){
@@ -47,6 +48,18 @@ class FlightRepository extends CrudRepository{
             ],
         });
         return flights;
+    }
+
+    async updateSeats(flightId, numberOfSeats, decrease = true){
+        const flight = await Flight.findByPk(flightId);
+        decrease = stringToBoolean(decrease); // to handle datas in json format and url-encoded format
+        if (decrease){
+            await flight.decrement('remainingSeats', { by : numberOfSeats});
+        }else{
+            await flight.increment('remainingSeats', { by : numberOfSeats});
+        }
+        await flight.reload(); // to get updated value of flight
+        return flight;
     }
 }
 
