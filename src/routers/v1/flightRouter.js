@@ -12,4 +12,7 @@ router.post('/', FlightMiddlewares.validateCreateRequest , FlightController.crea
 // GET : /api/v1/flights/?trips=BLR-MAA
 router.get('/',FlightController.getAllFlights);
 
+// GET : /api/v1/flights/:id
+router.get('/:id', FlightController.getFlight);
+
 module.exports = router;
